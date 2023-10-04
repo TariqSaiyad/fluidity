@@ -1,0 +1,32 @@
+name: Build and Deploy
+on: [push]
+permissions:
+  contents: write
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Setup .env variables
+        run: |
+          touch .env
+          echo NEXT_PUBLIC_BASE_PATH=${{ vars.NEXT_PUBLIC_BASE_PATH }} >> .env
+          echo NEXT_PUBLIC_ASSET_PATH=${{ vars.NEXT_PUBLIC_ASSET_PATH }} >> .env
+
+      - name: Install and build 🛠️
+        run: |
+          bun install
+          bun run build
+          touch out/.nojekyll
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: out
