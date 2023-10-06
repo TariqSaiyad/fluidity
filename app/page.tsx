@@ -1,18 +1,24 @@
 "use client";
-import Divider from "@components/divider/divider";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { fontSizeAt, getClampCSS, getClampValue } from "@lib/utils";
-import { Button, Container, Group, NumberInput, Paper } from "@mantine/core";
+import { getClampCSS, getClampValue, getFontSizeAt, rounded } from "@lib/utils";
+import {
+  Button,
+  Container,
+  Group,
+  NumberInput,
+  Paper,
+  Text,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useClipboard } from "@mantine/hooks";
 import { useState } from "react";
 import "./page.scss";
 
 export default function Home() {
-  const [parent] = useAutoAnimate(/* optional config */);
+  const [parent] = useAutoAnimate();
 
   const clipboard = useClipboard({ timeout: 1000 });
-  const [y, setY] = useState(0);
+  const [currentSize, setCurrentSize] = useState(0);
   const [formData, setFormData] = useState<FluidityForm | null>(null);
   const form = useForm<FluidityForm>({
     initialValues: {
@@ -29,17 +35,21 @@ export default function Home() {
     },
   });
 
-  const handleSubmit = (data: FluidityForm) => setFormData(data);
+  const handleSubmit = (data: FluidityForm) => {
+    setFormData(data);
+    setCurrentSize((data.maxScreen - data.minScreen) / 2 + data.minScreen);
+  };
 
   const clampValue = getClampValue(formData);
+  const fontSizeAt = rounded(getFontSizeAt(currentSize, formData));
 
   return (
     <main>
-      <Divider />
       <Container ref={parent} className="main">
         <h1>Fluidity</h1>
+        <Text size="lg">Responsive font scale calculator</Text>
 
-        <Paper shadow="lg" radius="lg" p="xl">
+        <Paper shadow="lg" radius="lg" p="xl" mt="xl" withBorder>
           <form className="form" onSubmit={form.onSubmit(handleSubmit)}>
             <div className="inputWrapper">
               <div>
@@ -84,38 +94,40 @@ export default function Home() {
         </Paper>
 
         {formData && (
-          <Paper shadow="lg" radius="lg" p="xl" mt="xl">
+          <Paper shadow="lg" radius="lg" p="xl" mt="xl" withBorder>
             <h2 className="fontSizeAt">
               What is the font size at
               <NumberInput
+                value={currentSize}
+                onChange={(val) => setCurrentSize(Number(val))}
                 min={formData.minScreen}
                 max={formData.maxScreen}
-                defaultValue={0}
                 suffix="px"
-                onChange={(val) => setY(fontSizeAt(Number(val), formData))}
                 variant="unstyled"
               />
               screen?
             </h2>
-            <p>{y}</p>
+            <p className="fontSizeAt__value">{fontSizeAt} rem</p>
           </Paper>
         )}
 
-        <Paper shadow="lg" radius="lg" p="xl" mt="xl">
-          <Button
-            color={clipboard.copied ? "teal" : "blue"}
-            onClick={() => clipboard.copy(getClampCSS(clampValue))}
-          >
-            {clipboard.copied ? "Copied" : "Copy"}
-          </Button>
-          <pre>
-            :root {"{"}
-            <br />
-            {"  "}--fluid-scale: {clampValue};
-            <br />
-            {"}"}
-          </pre>
-        </Paper>
+        {formData && (
+          <Paper shadow="lg" radius="lg" p="xl" mt="xl" withBorder>
+            <Button
+              color={clipboard.copied ? "teal" : "blue"}
+              onClick={() => clipboard.copy(getClampCSS(clampValue))}
+            >
+              {clipboard.copied ? "Copied" : "Copy"}
+            </Button>
+            <pre>
+              :root {"{"}
+              <br />
+              {"  "}--fluid-scale: {clampValue};
+              <br />
+              {"}"}
+            </pre>
+          </Paper>
+        )}
       </Container>
     </main>
   );

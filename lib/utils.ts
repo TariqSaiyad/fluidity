@@ -16,7 +16,9 @@ export function getClampCSS(clampValue: string) {
   return `--fluid-scale: ${clampValue};`;
 }
 
-export function fontSizeAt(x: number, data: FluidityForm) {
+export function getFontSizeAt(x: number, data: FluidityForm | null) {
+  if (!data) return 0;
+
   const { slope, yIntersection } = solveEquation(data);
 
   const y = slope * x + yIntersection;
