@@ -1,3 +1,4 @@
+import Divider from "@components/divider/divider";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import "@mantine/core/styles.css";
 import type { Metadata } from "next";
@@ -19,6 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body className={inter.className}>
         <MantineProvider>{children}</MantineProvider>
+        <Divider />
       </body>
     </html>
   );
