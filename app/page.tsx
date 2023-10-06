@@ -1,39 +1,18 @@
 "use client";
+import Divider from "@components/divider/divider";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { fontSizeAt, getClampCSS, getClampValue } from "@lib/utils";
 import { Button, Container, Group, NumberInput, Paper } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useClipboard } from "@mantine/hooks";
 import { useState } from "react";
-
-interface FluidityForm {
-  minScreen: number;
-  maxScreen: number;
-  minFont: number;
-  maxFont: number;
-}
-
-const REM = 16;
-
-const toRem = (value: number) => value / REM;
-const rounded = (value: number, place = 4) => parseFloat(value.toFixed(place));
-
-const getClampCSS = (clampValue: string) => `--fluid-scale: ${clampValue};`;
-
-function getClampValue(data: FluidityForm | null) {
-  if (!data) return "";
-
-  const { maxFont, maxScreen, minFont, minScreen } = data;
-
-  const slope = (maxFont - minFont) / (maxScreen - minScreen);
-  const yIntersection = -1 * minScreen * slope + minFont;
-
-  return `clamp(${toRem(minFont)}rem, ${rounded(
-    toRem(yIntersection)
-  )}rem + ${rounded(slope * 100)}vw, ${toRem(maxFont)}rem)`;
-}
+import "./page.scss";
 
 export default function Home() {
-  const clipboard = useClipboard({ timeout: 1000 });
+  const [parent] = useAutoAnimate(/* optional config */);
 
+  const clipboard = useClipboard({ timeout: 1000 });
+  const [y, setY] = useState(0);
   const [formData, setFormData] = useState<FluidityForm | null>(null);
   const form = useForm<FluidityForm>({
     initialValues: {
@@ -56,41 +35,72 @@ export default function Home() {
 
   return (
     <main>
-      <Container>
+      <Divider />
+      <Container ref={parent} className="main">
         <h1>Fluidity</h1>
 
         <Paper shadow="lg" radius="lg" p="xl">
-          <form onSubmit={form.onSubmit(handleSubmit)}>
-            <NumberInput
-              label="min font"
-              description="min font"
-              {...form.getInputProps("minFont")}
-            />
-            <NumberInput
-              label="min Screen"
-              description="min Screen"
-              {...form.getInputProps("minScreen")}
-            />
-
-            <NumberInput
-              label="max font"
-              description="max font"
-              {...form.getInputProps("maxFont")}
-            />
-            <NumberInput
-              label="max Screen"
-              description="max Screen"
-              {...form.getInputProps("maxScreen")}
-            />
-
+          <form className="form" onSubmit={form.onSubmit(handleSubmit)}>
+            <div className="inputWrapper">
+              <div>
+                <h2>Min Viewport</h2>
+                <div className="inputs">
+                  <NumberInput
+                    label="Font size (px)"
+                    variant="unstyled"
+                    size="lg"
+                    {...form.getInputProps("minFont")}
+                  />
+                  <NumberInput
+                    label="Width (px)"
+                    variant="unstyled"
+                    size="lg"
+                    {...form.getInputProps("minScreen")}
+                  />
+                </div>
+              </div>
+              <div>
+                <h2>Max Viewport</h2>
+                <div className="inputs">
+                  <NumberInput
+                    label="Font size (px)"
+                    variant="unstyled"
+                    size="lg"
+                    {...form.getInputProps("maxFont")}
+                  />
+                  <NumberInput
+                    label="Width (px)"
+                    variant="unstyled"
+                    size="lg"
+                    {...form.getInputProps("maxScreen")}
+                  />
+                </div>
+              </div>
+            </div>
             <Group justify="flex-end" mt="md">
               <Button type="submit">Submit</Button>
             </Group>
           </form>
         </Paper>
-        <Paper shadow="lg" radius="lg" p="xl" mt="xl">
-          {JSON.stringify(formData, null, 2)}
-        </Paper>
+
+        {formData && (
+          <Paper shadow="lg" radius="lg" p="xl" mt="xl">
+            <h2 className="fontSizeAt">
+              What is the font size at
+              <NumberInput
+                min={formData.minScreen}
+                max={formData.maxScreen}
+                defaultValue={0}
+                suffix="px"
+                onChange={(val) => setY(fontSizeAt(Number(val), formData))}
+                variant="unstyled"
+              />
+              screen?
+            </h2>
+            <p>{y}</p>
+          </Paper>
+        )}
+
         <Paper shadow="lg" radius="lg" p="xl" mt="xl">
           <Button
             color={clipboard.copied ? "teal" : "blue"}
