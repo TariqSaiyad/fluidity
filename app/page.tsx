@@ -1,4 +1,5 @@
 "use client";
+import Graph from "@components/graph/graph";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { getClampCSS, getClampValue, getFontSizeAt, rounded } from "@lib/utils";
 import {
@@ -109,6 +110,16 @@ export default function Home() {
             </h2>
             <p className="fontSizeAt__value">{fontSizeAt} rem</p>
           </Paper>
+        )}
+
+        {formData && (
+          <Graph
+            data={[
+              { x: formData.minScreen, y: formData.minFont },
+              { x: currentSize, y: fontSizeAt },
+              { x: formData.maxScreen, y: formData.maxFont },
+            ]}
+          />
         )}
 
         {formData && (
