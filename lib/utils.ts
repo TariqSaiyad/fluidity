@@ -12,10 +12,6 @@ export function rounded(value: number, place = 4) {
   return parseFloat(value.toFixed(place));
 }
 
-export function getClampCSS(clampValue: string) {
-  return `--fluid-scale: ${clampValue};`;
-}
-
 export function getFontSizeAt(x: number, data: FluidityForm | null) {
   if (!data) return 0;
 
