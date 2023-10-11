@@ -1,15 +1,8 @@
 "use client";
 import Graph from "@components/graph/graph";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { getClampCSS, getClampValue, getFontSizeAt, rounded } from "@lib/utils";
-import {
-  Button,
-  Container,
-  Group,
-  NumberInput,
-  Paper,
-  Text,
-} from "@mantine/core";
+import { getClampValue, getFontSizeAt, rounded } from "@lib/utils";
+import { Button, Container, Group, NumberInput, Paper } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useClipboard } from "@mantine/hooks";
 import { useState } from "react";
@@ -46,12 +39,13 @@ export default function Home() {
 
   return (
     <main>
-      <Container ref={parent} className="main">
-        <h1>Fluidity</h1>
-        <Text size="lg">Responsive font scale calculator</Text>
-
-        <Paper shadow="lg" radius="lg" p="xl" mt="xl" withBorder>
-          <form className="form" onSubmit={form.onSubmit(handleSubmit)}>
+      <Container ref={parent} className="main" size="xl" py="xl">
+        <div className="header">
+          <h1>Fluidity</h1>
+          <p>Responsive font scale calculator</p>
+        </div>
+        <Paper className="form" shadow="lg" radius="lg" p="xl" withBorder>
+          <form onSubmit={form.onSubmit(handleSubmit)}>
             <div className="inputWrapper">
               <div>
                 <h2>Min Viewport</h2>
@@ -59,13 +53,13 @@ export default function Home() {
                   <NumberInput
                     label="Font size (px)"
                     variant="unstyled"
-                    size="lg"
+                    size="xl"
                     {...form.getInputProps("minFont")}
                   />
                   <NumberInput
                     label="Width (px)"
                     variant="unstyled"
-                    size="lg"
+                    size="xl"
                     {...form.getInputProps("minScreen")}
                   />
                 </div>
@@ -76,26 +70,25 @@ export default function Home() {
                   <NumberInput
                     label="Font size (px)"
                     variant="unstyled"
-                    size="lg"
+                    size="xl"
                     {...form.getInputProps("maxFont")}
                   />
                   <NumberInput
                     label="Width (px)"
                     variant="unstyled"
-                    size="lg"
+                    size="xl"
                     {...form.getInputProps("maxScreen")}
                   />
                 </div>
               </div>
             </div>
             <Group justify="flex-end" mt="md">
-              <Button type="submit">Submit</Button>
+              <Button type="submit">Calculate</Button>
             </Group>
           </form>
         </Paper>
-
         {formData && (
-          <Paper shadow="lg" radius="lg" p="xl" mt="xl" withBorder>
+          <Paper className="sizeAt" shadow="lg" radius="lg" p="xl" withBorder>
             <h2 className="fontSizeAt">
               What is the font size at
               <NumberInput
@@ -111,33 +104,28 @@ export default function Home() {
             <p className="fontSizeAt__value">{fontSizeAt} rem</p>
           </Paper>
         )}
-
         {formData && (
-          <Graph
-            data={[
-              { x: formData.minScreen, y: formData.minFont },
-              { x: currentSize, y: fontSizeAt },
-              { x: formData.maxScreen, y: formData.maxFont },
-            ]}
-          />
-        )}
-
-        {formData && (
-          <Paper shadow="lg" radius="lg" p="xl" mt="xl" withBorder>
+          <Paper shadow="lg" radius="lg" p="xl" withBorder className="copyItem">
+            <code>{clampValue}</code>
             <Button
               color={clipboard.copied ? "teal" : "blue"}
-              onClick={() => clipboard.copy(getClampCSS(clampValue))}
+              onClick={() => clipboard.copy(clampValue)}
             >
               {clipboard.copied ? "Copied" : "Copy"}
             </Button>
-            <pre>
-              :root {"{"}
-              <br />
-              {"  "}--fluid-scale: {clampValue};
-              <br />
-              {"}"}
-            </pre>
           </Paper>
+        )}
+
+        {formData && (
+          <div className="graph">
+            <Graph
+              data={[
+                { x: formData.minScreen, y: formData.minFont },
+                { x: currentSize, y: fontSizeAt },
+                { x: formData.maxScreen, y: formData.maxFont },
+              ]}
+            />
+          </div>
         )}
       </Container>
     </main>
