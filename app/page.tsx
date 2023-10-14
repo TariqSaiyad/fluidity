@@ -1,7 +1,7 @@
 "use client";
 import Graph from "@components/graph/graph";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { getClampValue, getFontSizeAt, rounded } from "@lib/utils";
+import { getClampCSS, getFontSizeAt, rounded } from "@lib/utils";
 import { Button, Container, Group, NumberInput, Paper } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useClipboard } from "@mantine/hooks";
@@ -30,11 +30,19 @@ export default function Home() {
   });
 
   const handleSubmit = (data: FluidityForm) => {
-    setFormData(data);
+    // hack: need to do this as the form values may be a string.
+    const processedData: FluidityForm = {
+      maxFont: Number(data.maxFont),
+      maxScreen: Number(data.maxScreen),
+      minFont: Number(data.minFont),
+      minScreen: Number(data.minScreen),
+    };
+
+    setFormData(processedData);
     setCurrentSize((data.maxScreen - data.minScreen) / 2 + data.minScreen);
   };
 
-  const clampValue = getClampValue(formData);
+  const clampValue = getClampCSS(formData);
   const fontSizeAt = rounded(getFontSizeAt(currentSize, formData));
 
   return (
@@ -118,13 +126,7 @@ export default function Home() {
 
         {formData && (
           <div className="graph">
-            <Graph
-              data={[
-                { x: formData.minScreen, y: formData.minFont },
-                { x: currentSize, y: fontSizeAt },
-                { x: formData.maxScreen, y: formData.maxFont },
-              ]}
-            />
+            <Graph formData={formData} />
           </div>
         )}
       </Container>
