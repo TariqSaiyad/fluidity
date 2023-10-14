@@ -15,28 +15,29 @@ export function rounded(value: number, place = 4) {
 export function getFontSizeAt(x: number, data: FluidityForm | null) {
   if (!data) return 0;
 
-  const { slope, yIntersection } = solveEquation(data);
-
-  const y = slope * x + yIntersection;
+  const { equation } = getEquation(data);
+  const y = equation(x);
 
   return clamp(y, data.minFont, data.maxFont);
 }
 
-export function solveEquation(data: FluidityForm) {
+export function getEquation(data: FluidityForm) {
   const { maxFont, maxScreen, minFont, minScreen } = data;
 
   const slope = (maxFont - minFont) / (maxScreen - minScreen);
-  const yIntersection = -1 * minScreen * slope + minFont;
+  const yIntersection = -minScreen * slope + minFont;
+
   return {
-    slope,
+    equation: (x: number) => slope * x + yIntersection,
     yIntersection,
+    slope,
   };
 }
 
-export function getClampValue(data: FluidityForm | null) {
+export function getClampCSS(data: FluidityForm | null) {
   if (!data) return "";
 
-  const { slope, yIntersection } = solveEquation(data);
+  const { slope, yIntersection } = getEquation(data);
 
   return `clamp(${toRem(data.minFont)}rem, ${rounded(
     toRem(yIntersection)

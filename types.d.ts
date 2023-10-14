@@ -7,4 +7,9 @@ declare global {
     minFont: number;
     maxFont: number;
   }
+
+  export interface DataRecord {
+    x: number;
+    y: number;
+  }
 }
