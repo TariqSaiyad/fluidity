@@ -91,6 +91,7 @@ export default function Home() {
               </div>
             </div>
             <Group justify="flex-end" mt="md">
+              <Button onClick={() => form.reset()}>Reset</Button>
               <Button type="submit">Calculate</Button>
             </Group>
           </form>

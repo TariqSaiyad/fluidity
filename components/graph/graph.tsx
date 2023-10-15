@@ -1,6 +1,5 @@
 "use client";
-
-import { getEquation, rounded } from "@lib/utils";
+import { clamp, getEquation, rounded } from "@lib/utils";
 import { Paper } from "@mantine/core";
 import {
   VisAxis,
@@ -10,7 +9,7 @@ import {
   VisTooltip,
   VisXYContainer,
 } from "@unovis/react";
-import { CurveType, clamp } from "@unovis/ts";
+import { CurveType } from "@unovis/ts";
 
 interface GraphProps {
   formData: FluidityForm;
@@ -34,16 +33,28 @@ export default function Graph({ formData }: GraphProps) {
   const tooltip = (d: DataRecord) => {
     const poi = pointsOfInterest.includes(d.x);
     const tag = poi ? "strong" : "span";
+    let title = "";
+    if (d.x === minScreen) title = "Minimum Screen";
+    if (d.x === midX) title = "Mid Point";
+    if (d.x === maxScreen) title = "Maximum Screen";
 
-    return `<${tag}>
+    return `<span>
+    ${title ? `<strong>${title}</strong><br>` : ""}
     Screen: ${d.x}px 
     <br />
     Font: ${rounded(d.y)}rem
-  </${tag}>`;
+  </span>`;
   };
 
   return (
-    <Paper shadow="lg" radius="lg" p="sm" h="100%" withBorder>
+    <Paper
+      shadow="lg"
+      radius="lg"
+      p="sm"
+      h="100%"
+      withBorder
+      className="graph-container"
+    >
       <VisXYContainer data={data} yDomain={[minFont - 1, maxFont + 1]}>
         <VisTooltip />
         <VisLine
