@@ -13,13 +13,15 @@ import { CurveType } from "@unovis/ts";
 
 interface GraphProps {
   formData: FluidityForm;
+  currentSize: number;
 }
 
-export default function Graph({ formData }: GraphProps) {
+export default function Graph({ formData, currentSize }: GraphProps) {
   const { maxFont, maxScreen, minFont, minScreen } = formData;
+
   const midX = (maxScreen - minScreen) / 2 + minScreen;
-  const pointsOfInterest = [minScreen, maxScreen, midX];
-  const data = generatePoints(formData, 300, 1440, [minScreen, maxScreen]);
+  const pointsOfInterest = [minScreen, maxScreen, midX, currentSize];
+  const data = generatePoints(formData, 300, 1440, pointsOfInterest);
 
   // const sorted = data.sort((a, b) => a.x - b.x);
   const x = (d: DataRecord) => d.x;
@@ -27,8 +29,10 @@ export default function Graph({ formData }: GraphProps) {
 
   const size = ({ x }: DataRecord) => (pointsOfInterest.includes(x) ? 14 : 9);
 
-  const color = ({ x }: DataRecord) =>
-    pointsOfInterest.includes(x) ? "deeppink" : "darkblue";
+  const color = ({ x }: DataRecord) => {
+    if (x === currentSize) return "orange";
+    return pointsOfInterest.includes(x) ? "deeppink" : "darkblue";
+  };
 
   const tooltip = (d: DataRecord) => {
     const poi = pointsOfInterest.includes(d.x);
@@ -45,7 +49,6 @@ export default function Graph({ formData }: GraphProps) {
     Font: ${rounded(d.y)}rem
   </span>`;
   };
-
   return (
     <Paper
       shadow="lg"
@@ -100,13 +103,9 @@ function generatePoints(
 
   // Generate points for custom x values
   for (const customX of custom) {
-    const y = equation(customX);
+    const y = rounded(clamp(equation(customX), minFont, maxFont));
     points.push({ x: customX, y });
   }
-
-  // also include midpoint.
-  const midX = (maxScreen - minScreen) / 2 + minScreen;
-  points.push({ x: midX, y: equation(midX) });
 
   points = points.sort((a, b) => a.x - b.x);
 

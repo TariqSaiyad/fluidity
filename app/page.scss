@@ -39,14 +39,20 @@
   flex-direction: column;
 
   h2 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     border-bottom: 2px solid darkblue;
   }
 
   .inputWrapper {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    grid-template-columns: 1fr 1fr auto;
     gap: 2rem;
+
+    @media only screen and (max-width:568px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr auto;
+      
+    }
 
     .inputs {
       display: grid;
@@ -58,6 +64,13 @@
       }
     }
   }
+}
+
+.form-actions {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
 }
 
 .copyItem {
