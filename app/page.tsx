@@ -2,7 +2,7 @@
 import Graph from "@components/graph/graph";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { getClampCSS, getFontSizeAt, rounded } from "@lib/utils";
-import { Button, Container, Group, NumberInput, Paper } from "@mantine/core";
+import { Button, Container, NumberInput, Paper } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useClipboard } from "@mantine/hooks";
 import { useState } from "react";
@@ -52,7 +52,14 @@ export default function Home() {
           <h1>Fluidity</h1>
           <p>Responsive font scale calculator</p>
         </div>
-        <Paper className="form" shadow="lg" radius="lg" p="xl" withBorder>
+        <Paper
+          className="form"
+          shadow="lg"
+          radius="lg"
+          px="xl"
+          py="md"
+          withBorder
+        >
           <form onSubmit={form.onSubmit(handleSubmit)}>
             <div className="inputWrapper">
               <div>
@@ -89,11 +96,11 @@ export default function Home() {
                   />
                 </div>
               </div>
+              <div className="form-actions">
+                <Button type="submit">Calculate</Button>
+                <Button onClick={() => form.reset()}>Reset</Button>
+              </div>
             </div>
-            <Group justify="flex-end" mt="md">
-              <Button onClick={() => form.reset()}>Reset</Button>
-              <Button type="submit">Calculate</Button>
-            </Group>
           </form>
         </Paper>
         {formData && (
@@ -127,7 +134,7 @@ export default function Home() {
 
         {formData && (
           <div className="graph">
-            <Graph formData={formData} />
+            <Graph formData={formData} currentSize={currentSize} />
           </div>
         )}
       </Container>
