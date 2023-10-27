@@ -62,6 +62,7 @@ export function Carousel({ children }: { children?: ReactNode }) {
         <div className={styles.progress}>
           {scrollPoints.map((_, index) => (
             <DotButton
+             key={index}
               selected={index === selectedIndex}
               onClick={() => scrollTo(index)}
             />

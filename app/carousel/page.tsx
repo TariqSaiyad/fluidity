@@ -4,7 +4,6 @@ import styles from "./carousel-page.module.scss";
 export default async function CarouselPage() {
   const raw = await fetch("https://dummyjson.com/products");
 const products = (await raw.json()).products as any[];
-  console.log(products);
 
   const list = products.slice(0,6)
 
