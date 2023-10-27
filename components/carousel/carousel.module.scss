@@ -9,6 +9,10 @@
   z-index: 4;
 }
 
+.wrapper{
+  z-index: 99;
+}
+
 .viewport {
   overflow: hidden;
   position: relative;

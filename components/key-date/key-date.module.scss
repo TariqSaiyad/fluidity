@@ -1,0 +1,48 @@
+.linkContainer {
+  display: flex;
+  border-bottom: 0.5rem #4fd4a1 solid;
+  border-radius: 0 0 0.5rem 0.5rem;
+  color: black;
+  min-height: 10rem;
+  height: 100%;
+  flex-direction: column;
+  border-top-right-radius: 1rem;
+  overflow: hidden;
+
+  .date {
+    display: flex;
+    align-items: center;
+    background-color: #4d1f40;
+    gap: 1rem;
+    color: white;
+    padding: 1rem;
+
+    justify-content: flex-start !important;
+    width: 100% !important;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1.5rem;
+
+    .title {
+      margin: 0;
+    }
+
+    .summary {
+      color: black;
+      margin-bottom: 1.5rem;
+    }
+
+    .link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      margin-top: auto;
+      justify-content: flex-end;
+    }
+  }
+}
