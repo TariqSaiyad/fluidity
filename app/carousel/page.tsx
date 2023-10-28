@@ -10,21 +10,7 @@ export default async function CarouselPage() {
 
   return (
     <main className={styles.wrapper}>
-      <Carousel>
-        {list.map((product, index) => (
-          <li key={product.id}>
-            <div
-              className={styles.example}
-              style={{ backgroundColor: getColor(index) }}
-            >
-              <h3>{product.title}</h3>
-              <p>{product.description}</p>
-            </div>
-          </li>
-        ))}
-      </Carousel>
-      <br />
-      <br />
+      <h2>With shadow</h2>
       <Carousel>
         {list.map((product, index) => (
           <li key={product.id}>
@@ -33,6 +19,22 @@ export default async function CarouselPage() {
               path="/"
               summary={product.description}
               title={product.title}
+            />
+          </li>
+        ))}
+      </Carousel>
+      <br />
+      <br />
+      <h2>With no shadow</h2>
+      <Carousel>
+        {list.map((product, index) => (
+          <li key={product.id}>
+            <KeyDateTeaser
+              leading={product.price}
+              path="/"
+              summary={product.description}
+              title={product.title}
+              noShadow
             />
           </li>
         ))}

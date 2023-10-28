@@ -7,6 +7,7 @@ interface KeyDateTeaserProps {
   title: string;
   summary: string;
   leading: string;
+  noShadow?: boolean;
 }
 
 export default function KeyDateTeaser({
@@ -14,9 +15,13 @@ export default function KeyDateTeaser({
   title,
   summary,
   leading,
+  noShadow = false,
 }: KeyDateTeaserProps) {
   return (
-    <Link href={path} className={clsx(styles.linkContainer)}>
+    <Link
+      href={path}
+      className={clsx(styles.linkContainer, noShadow && styles.noShadow)}
+    >
       <span className={clsx(styles.date, "heading-md")}>{leading}</span>
       <div className={styles.content}>
         <h2 className={clsx("heading-sm", styles.title)}>{title}</h2>
