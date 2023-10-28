@@ -7,7 +7,10 @@ import { ReactNode, useCallback, useEffect, useState } from "react";
 import styles from "./carousel.module.scss";
 
 export function Carousel({ children }: { children?: ReactNode }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start" });
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    dragFree: true,
+  });
   const [canScroll, setCanScroll] = useState({ prev: false, next: true });
   const [scrollPoints, setScrollPoints] = useState<number[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -51,7 +54,7 @@ export function Carousel({ children }: { children?: ReactNode }) {
       >
         <ul className={styles.container}>{children}</ul>
       </div>
-      <div className={styles.controls} aria-hidden>
+      {/* <div className={styles.controls} aria-hidden>
         <button
           className={clsx(styles.scrollBtn, styles.left)}
           onClick={scrollPrev}
@@ -62,7 +65,7 @@ export function Carousel({ children }: { children?: ReactNode }) {
         <div className={styles.progress}>
           {scrollPoints.map((_, index) => (
             <DotButton
-             key={index}
+              key={index}
               selected={index === selectedIndex}
               onClick={() => scrollTo(index)}
             />
@@ -75,7 +78,7 @@ export function Carousel({ children }: { children?: ReactNode }) {
         >
           {">"}
         </button>
-      </div>
+      </div> */}
     </div>
   );
 }
